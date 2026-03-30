@@ -1,0 +1,23 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      - name: Login en Docker Hub
+        run: echo "${{ secrets.PASSWORD_DOCKERHUB }}" | docker login -u "${{ secrets.USER_DOCKERHUB }}" --password-stdin
+
+      - name: Build de la imagen
+        run: docker build -t ${{ secrets.USER_DOCKERHUB }}/practica_devops:latest .
+
+      - name: Push a Docker Hub
+        run: docker push ${{ secrets.USER_DOCKERHUB }}/practica_devops:latest
